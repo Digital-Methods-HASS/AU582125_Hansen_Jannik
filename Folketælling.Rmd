@@ -1,0 +1,272 @@
+---
+title: "Folketælling 1787-1845"
+output:
+  word_document: default
+  html_document: default
+---
+# Loading Packs
+```{r}
+library(tidyverse)
+```
+
+# Loading data
+```{r}
+F1787 <- read_csv("https://raw.githubusercontent.com/aarhusstadsarkiv/datasets/master/censuses/1787/census-1787-normalized.csv")
+F1801 <- read_csv("https://raw.githubusercontent.com/aarhusstadsarkiv/datasets/master/censuses/1801/census-1801-normalized.csv") 
+F1845 <- read_csv("https://raw.githubusercontent.com/aarhusstadsarkiv/datasets/master/censuses/1845/census-1845-normalized.csv")
+```
+
+# Sorting the data
+```{r}
+F1787_aarhus <- F1787 %>% 
+  filter(sogn == "Århus Købstad")
+F1801_aarhus <- F1801 %>%
+  filter(sogn == "Århus Købstad")
+F1845_aarhus <- F1845 %>%
+  filter(parish == "Århus Købstad")
+```
+# Men vs. Women
+```{r}
+F1787_aarhus %>%
+  count(koen, sort = TRUE) %>%
+  top_n(15) %>%
+  mutate(koen = reorder(koen, n)) %>%
+  ggplot(aes(x = koen, y = n)) +
+  geom_col() +
+  xlab(NULL) +
+  coord_flip() +
+      labs(x = "Gender",
+      y = "Amount",
+      title = "Gender status 1787")
+
+F1801_aarhus %>%
+  count(koen, sort = TRUE) %>%
+  top_n(15) %>%
+  mutate(koen = reorder(koen, n)) %>%
+  ggplot(aes(x = koen, y = n)) +
+  geom_col() +
+  xlab(NULL) +
+  coord_flip() +
+      labs(x = "Gender",
+      y = "Amount",
+      title = "Gender status 1801")
+
+F1845_aarhus %>%
+  count(gender, sort = TRUE) %>%
+  top_n(15) %>%
+  mutate(gender = reorder(gender, n)) %>%
+  ggplot(aes(x = gender, y = n)) +
+  geom_col() +
+  xlab(NULL) +
+  coord_flip() +
+      labs(x = "gender",
+      y = "Amount",
+      title = "Gender status 1845")
+```
+
+# Marital Status
+```{r}
+F1787_aarhus %>%
+  count(civilstand, sort = TRUE) %>%
+  top_n(15) %>%
+  mutate(civilstand = reorder(civilstand, n)) %>%
+  ggplot(aes(x = civilstand, y = n)) +
+  geom_col() +
+  xlab(NULL) +
+  coord_flip() +
+      labs(x = "Marital status",
+      y = "Amount",
+      title = "Marital status 1787")
+
+F1801_aarhus %>%
+  count(civilstand, sort = TRUE) %>%
+  top_n(15) %>%
+  mutate(civilstand = reorder(civilstand, n)) %>%
+  ggplot(aes(x = civilstand, y = n)) +
+  geom_col() +
+  xlab(NULL) +
+  coord_flip() +
+      labs(x = "civilstand",
+      y = "Amount",
+      title = "Marital status 1801")
+
+F1845_aarhus %>%
+  count(marital_status, sort = TRUE) %>%
+  top_n(15) %>%
+  mutate(Marital = reorder(marital_status, n)) %>%
+  ggplot(aes(x = marital_status, y = n)) +
+  geom_col() +
+  xlab(NULL) +
+  coord_flip() +
+      labs(x = "civilstand",
+      y = "Amount",
+      title = "Marital status 1845")
+
+```
+
+# Marital status over 20
+```{r}
+F1787_aarhus %>%
+  filter(alder > "20") %>%
+  count(civilstand, sort = TRUE) %>%
+  top_n(15) %>%
+  mutate(civilstand = reorder(civilstand, n)) %>%
+  ggplot(aes(x = civilstand, y = n)) +
+  geom_col() +
+  xlab(NULL) +
+  coord_flip() +
+      labs(x = "Marital status",
+      y = "Amount",
+      title = "Marital status over 20 years old 1787")
+
+F1801_aarhus %>%
+  filter(alder > "20") %>%
+  count(civilstand, sort = TRUE) %>%
+  top_n(15) %>%
+  mutate(civilstand = reorder(civilstand, n)) %>%
+  ggplot(aes(x = civilstand, y = n)) +
+  geom_col() +
+  xlab(NULL) +
+  coord_flip() +
+      labs(x = "civilstand",
+      y = "Amount",
+      title = "Marital status over 20 years old 1801")
+
+F1845_aarhus %>%
+  filter(age > "20") %>%
+  count(marital_status, sort = TRUE) %>%
+  top_n(15) %>%
+  mutate(Marital = reorder(marital_status, n)) %>%
+  ggplot(aes(x = marital_status, y = n)) +
+  geom_col() +
+  xlab(NULL) +
+  coord_flip() +
+      labs(x = "civilstand",
+      y = "Amount",
+      title = "Marital status over 20 years old 1845")
+```
+```{r}
+F1787_aarhus %>%
+  filter(alder > "20") %>%
+  filter(koen == "mand") %>%
+  count(civilstand, sort = TRUE) %>%
+  top_n(15) %>%
+  mutate(civilstand = reorder(civilstand, n)) %>%
+  ggplot(aes(x = civilstand, y = n)) +
+  geom_col() +
+  xlab(NULL) +
+  coord_flip() +
+      labs(x = "Marital status",
+      y = "Amount",
+      title = "Men over 20 years old Marital status 1787")
+
+F1801_aarhus %>%
+  filter(alder > "20") %>%
+  filter(koen == "mand") %>%
+  count(civilstand, sort = TRUE) %>%
+  top_n(15) %>%
+  mutate(civilstand = reorder(civilstand, n)) %>%
+  ggplot(aes(x = civilstand, y = n)) +
+  geom_col() +
+  xlab(NULL) +
+  coord_flip() +
+      labs(x = "civilstand",
+      y = "Amount",
+      title = "Men over 20 years old Marital status 1801")
+
+F1845_aarhus %>%
+  filter(age > "20") %>%
+  filter(gender == "mand") %>%
+  count(marital_status, sort = TRUE) %>%
+  top_n(15) %>%
+  mutate(Marital = reorder(marital_status, n)) %>%
+  ggplot(aes(x = marital_status, y = n)) +
+  geom_col() +
+  xlab(NULL) +
+  coord_flip() +
+      labs(x = "civilstand",
+      y = "Amount",
+      title = "Men over 20 years old Marital status 1845")
+```
+```{r}
+F1787_aarhus %>%
+  filter(alder > "20") %>%
+  filter(koen == "kvinde") %>%
+  count(civilstand, sort = TRUE) %>%
+  top_n(15) %>%
+  mutate(civilstand = reorder(civilstand, n)) %>%
+  ggplot(aes(x = civilstand, y = n)) +
+  geom_col() +
+  xlab(NULL) +
+  coord_flip() +
+      labs(x = "Marital status",
+      y = "Amount",
+      title = "Women over 20 years old Marital status 1787")
+
+F1801_aarhus %>%
+  filter(alder > "20") %>%
+  filter(koen == "kvinde") %>%
+  count(civilstand, sort = TRUE) %>%
+  top_n(15) %>%
+  mutate(civilstand = reorder(civilstand, n)) %>%
+  ggplot(aes(x = civilstand, y = n)) +
+  geom_col() +
+  xlab(NULL) +
+  coord_flip() +
+      labs(x = "civilstand",
+      y = "Amount",
+      title = "Women over 20 years old Marital status 1801")
+
+F1845_aarhus %>%
+  filter(age > "20") %>%
+  filter(gender == "kvinde") %>%
+  count(marital_status, sort = TRUE) %>%
+  top_n(15) %>%
+  mutate(Marital = reorder(marital_status, n)) %>%
+  ggplot(aes(x = marital_status, y = n)) +
+  geom_col() +
+  xlab(NULL) +
+  coord_flip() +
+      labs(x = "civilstand",
+      y = "Amount",
+      title = "Women over 20 years old Marital status 1845")
+```
+# Location
+```{r}
+F1787_aarhus %>%
+  count(lokalitet, sort = TRUE) %>%
+  top_n(15) %>%
+  mutate(lokalitet = reorder(lokalitet, n)) %>%
+  ggplot(aes(x = lokalitet, y = n)) +
+  geom_col() +
+  xlab(NULL) +
+  coord_flip() +
+      labs(x = "Location",
+      y = "Amount",
+      title = "Location status 1787")
+
+F1801_aarhus %>%
+  count(lokalitet, sort = TRUE) %>%
+  top_n(15) %>%
+  mutate(lokalitet = reorder(lokalitet, n)) %>%
+  ggplot(aes(x = lokalitet, y = n)) +
+  geom_col() +
+  xlab(NULL) +
+  coord_flip() +
+      labs(x = "Location",
+      y = "Amount",
+      title = "Location status 1801")
+
+F1845_aarhus %>%
+  count(location, sort = TRUE) %>%
+  top_n(15) %>%
+  mutate(location = reorder(location, n)) %>%
+  ggplot(aes(x = location, y = n)) +
+  geom_col() +
+  xlab(NULL) +
+  coord_flip() +
+      labs(x = "Location",
+      y = "Amount",
+      title = "Location status 1845")
+```
+
